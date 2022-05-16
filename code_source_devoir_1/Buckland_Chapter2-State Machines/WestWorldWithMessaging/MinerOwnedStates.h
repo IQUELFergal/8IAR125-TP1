@@ -127,6 +127,8 @@ private:
   //copy ctor and assignment should be private
   QuenchThirst(const QuenchThirst&);
   QuenchThirst& operator=(const QuenchThirst&);
+
+  int timeDrink;
  
 public:
 
@@ -171,6 +173,40 @@ public:
 
   virtual bool OnMessage(Miner* agent, const Telegram& msg);
 };
+
+
+
+
+
+
+
+class FightBar : public State<Miner>
+{
+private:
+
+	FightBar() {}
+
+	//copy ctor and assignment should be private
+	FightBar(const FightBar&);
+	FightBar& operator=(const FightBar&);
+
+public:
+
+	//this is a singleton
+	static FightBar* Instance();
+
+	virtual void Enter(Miner* miner);
+
+	virtual void Execute(Miner* miner);
+
+	virtual void Exit(Miner* miner);
+
+	virtual bool OnMessage(Miner* agent, const Telegram& msg);
+};
+
+
+
+
 
 
 

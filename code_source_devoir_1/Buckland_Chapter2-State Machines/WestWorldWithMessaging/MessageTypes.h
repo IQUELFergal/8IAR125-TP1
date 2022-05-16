@@ -7,6 +7,9 @@ enum message_type
 {
   Msg_HiHoneyImHome,
   Msg_StewReady,
+  Msg_EnterBar,
+  Msg_ProvokeFight,
+  Msg_AcceptFight
 };
 
 

@@ -214,6 +214,15 @@ bool GoHomeAndSleepTilRested::OnMessage(Miner* pMiner, const Telegram& msg)
    return false; //send message to global message handler
 }
 
+
+
+
+
+
+
+
+
+
 //------------------------------------------------------------------------QuenchThirst
 
 QuenchThirst* QuenchThirst::Instance()
@@ -230,16 +239,33 @@ void QuenchThirst::Enter(Miner* pMiner)
     pMiner->ChangeLocation(saloon);
 
     cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Boy, ah sure is thusty! Walking to the saloon";
+
+    Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY, //time delay
+        pMiner->ID(),            //ID of sender
+        ent_Drunkard,            //ID of recipient
+        Msg_EnterBar,            //the message
+        NO_ADDITIONAL_INFO);
+
+    timeDrink = 1;
   }
 }
 
 void QuenchThirst::Execute(Miner* pMiner)
 {
-  pMiner->BuyAndDrinkAWhiskey();
+    if (timeDrink == 1) 
+    {
+        pMiner->BuyAndDrinkAWhiskey();
 
-  cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "That's mighty fine sippin' liquer";
+        cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "That's mighty fine sippin' liquer";
 
-  pMiner->GetFSM()->ChangeState(EnterMineAndDigForNugget::Instance());  
+        pMiner->GetFSM()->ChangeState(EnterMineAndDigForNugget::Instance());
+    }
+    else if (timeDrink == 0)
+    {
+        pMiner->GetFSM()->ChangeState(EnterMineAndDigForNugget::Instance());
+    }
+
+    timeDrink -= 1;
 }
 
 
@@ -251,9 +277,39 @@ void QuenchThirst::Exit(Miner* pMiner)
 
 bool QuenchThirst::OnMessage(Miner* pMiner, const Telegram& msg)
 {
-  //send msg to global message handler
-  return false;
+    SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+    switch (msg.Msg)
+    {
+    case Msg_ProvokeFight:
+
+        cout << "\nMessage handled by " << GetNameOfEntity(pMiner->ID())
+            << " at time: " << Clock->GetCurrentTime();
+
+        SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+        cout << "\n" << GetNameOfEntity(pMiner->ID())
+            << ": You want some ?";
+
+        pMiner->GetFSM()->ChangeState(FightBar::Instance());
+
+        return true;
+
+    }
+    return false;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 //------------------------------------------------------------------------EatStew
 
@@ -287,6 +343,48 @@ bool EatStew::OnMessage(Miner* pMiner, const Telegram& msg)
 {
   //send msg to global message handler
   return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+FightBar* FightBar::Instance()
+{
+    static FightBar instance;
+
+    return &instance;
+}
+
+
+void FightBar::Enter(Miner* pMiner)
+{
+    cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Smells Reaaal goood Elsa!";
+}
+
+void FightBar::Execute(Miner* pMiner)
+{
+    cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Take that";
+
+    pMiner->GetFSM()->RevertToPreviousState();
+}
+
+void FightBar::Exit(Miner* pMiner)
+{
+    cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Thankya li'lle lady. Ah better get back to whatever ah wuz doin'";
+}
+
+
+bool FightBar::OnMessage(Miner* pMiner, const Telegram& msg)
+{
+    //send msg to global message handler
+    return false;
 }
 
 
