@@ -44,20 +44,20 @@ public:
 //  Drunkard will go home and sleep until his fatigue is decreased
 //  sufficiently
 //------------------------------------------------------------------------
-class GoHomeAndSleepTilRested : public State<Drunkard>
+class GoHomeAndSleep : public State<Drunkard>
 {
 private:
 
-	GoHomeAndSleepTilRested() {}
+	GoHomeAndSleep() {}
 
 	//copy ctor and assignment should be private
-	GoHomeAndSleepTilRested(const GoHomeAndSleepTilRested&);
-	GoHomeAndSleepTilRested& operator=(const GoHomeAndSleepTilRested&);
+	GoHomeAndSleep(const GoHomeAndSleep&);
+	GoHomeAndSleep& operator=(const GoHomeAndSleep&);
 
 public:
 
 	//this is a singleton
-	static GoHomeAndSleepTilRested* Instance();
+	static GoHomeAndSleep* Instance();
 
 	virtual void Enter(Drunkard* drunkard);
 

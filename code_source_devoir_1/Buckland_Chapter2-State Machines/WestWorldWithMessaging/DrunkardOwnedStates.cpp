@@ -48,7 +48,7 @@ void GoToTheSaloonAndDrink::Execute(Drunkard* pDrunkard)
 
     if (pDrunkard->Drunk())
     {
-        pDrunkard->GetFSM()->ChangeState(GoHomeAndSleepTilRested::Instance());
+        pDrunkard->GetFSM()->ChangeState(GoHomeAndSleep::Instance());
     }
 }
 
@@ -68,15 +68,15 @@ bool GoToTheSaloonAndDrink::OnMessage(Drunkard* pDrunkard, const Telegram& msg)
 
 
 //------------------------------------------------------------------------methods for GoHomeAndSleepTilRested
-GoHomeAndSleepTilRested* GoHomeAndSleepTilRested::Instance()
+GoHomeAndSleep* GoHomeAndSleep::Instance()
 {
-    static GoHomeAndSleepTilRested instance;
+    static GoHomeAndSleep instance;
 
     return &instance;
 }
 
 
-void GoHomeAndSleepTilRested::Enter(Drunkard* pDrunkard)
+void GoHomeAndSleep::Enter(Drunkard* pDrunkard)
 {
     //if the miner is not already located at the goldmine, he must
     //change location to the gold mine
@@ -89,7 +89,7 @@ void GoHomeAndSleepTilRested::Enter(Drunkard* pDrunkard)
 }
 
 
-void GoHomeAndSleepTilRested::Execute(Drunkard* pDrunkard)
+void GoHomeAndSleep::Execute(Drunkard* pDrunkard)
 {
     pDrunkard->DecreaseDrunkenness();
 
@@ -102,14 +102,14 @@ void GoHomeAndSleepTilRested::Execute(Drunkard* pDrunkard)
 }
 
 
-void GoHomeAndSleepTilRested::Exit(Drunkard* pDrunkard)
+void GoHomeAndSleep::Exit(Drunkard* pDrunkard)
 {
     cout << "\n" << GetNameOfEntity(pDrunkard->ID()) << ": "
         << "Ah'm leavin' mah shack";
 }
 
 
-bool GoHomeAndSleepTilRested::OnMessage(Drunkard* pDrunkard, const Telegram& msg)
+bool GoHomeAndSleep::OnMessage(Drunkard* pDrunkard, const Telegram& msg)
 {
     //send msg to global message handler
     return false;
@@ -128,55 +128,23 @@ Fight* Fight::Instance()
 
 void Fight::Enter(Drunkard* pDrunkard)
 {
-    if (pDrunkard->Location() != saloon)
-    {
-        cout << "\n" << GetNameOfEntity(pDrunkard->ID()) << ": " << "Goin' home to sleep";
-
-        pDrunkard->ChangeLocation(shack);
-    }
+    
 }
 
 
 void Fight::Execute(Drunkard* pDrunkard)
 {
-    pDrunkard->DecreaseDrunkenness();
-
-    cout << "\n" << GetNameOfEntity(pDrunkard->ID()) << ": " << "Sleepin'";
-
-    if (!pDrunkard->Drunk())
-    {
-        pDrunkard->GetFSM()->ChangeState(Fight::Instance());
-    }
+    
 }
 
 
 void Fight::Exit(Drunkard* pDrunkard)
 {
-    cout << "\n" << GetNameOfEntity(pDrunkard->ID()) << ": "
-        << "Ah'm leavin' mah shack";
+    
 }
 
 
 bool Fight::OnMessage(Drunkard* pDrunkard, const Telegram& msg)
 {
-    SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-
-    switch (msg.Msg)
-    {
-    case Msg_StewReady:
-
-        cout << "\nMessage handled by " << GetNameOfEntity(pDrunkard->ID())
-            << " at time: " << Clock->GetCurrentTime();
-
-        SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-
-        cout << "\n" << GetNameOfEntity(pDrunkard->ID())
-            << ": Ouch !";
-
-        pDrunkard->
-
-        return true;
-
-    }//end switch
     return false;
 }
