@@ -17,7 +17,7 @@ using std::cout;
 extern std::ofstream os;
 #define cout os
 #endif
-
+#include "../../Common/misc/utils.h"
 
 //------------------------------------------------------------------------methods for EnterMineAndDigForNugget
 EnterMineAndDigForNugget* EnterMineAndDigForNugget::Instance()
@@ -365,25 +365,59 @@ FightBar* FightBar::Instance()
 
 void FightBar::Enter(Miner* pMiner)
 {
-    cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Smells Reaaal goood Elsa!";
+    //cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Smells Reaaal goood Elsa!";
 }
 
 void FightBar::Execute(Miner* pMiner)
 {
     cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Take that";
 
-    pMiner->GetFSM()->RevertToPreviousState();
+    if (!pMiner->Healthy())
+    {
+        Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY, //time delay
+            pMiner->ID(),                               //ID of sender
+            ent_Drunkard,                               //ID of recipient
+            Msg_WinFight,                               //the message
+            NO_ADDITIONAL_INFO);
+
+        cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Ouch";
+
+        pMiner->GetFSM()->ChangeState(GoHomeAndSleepTilRested::Instance());
+    }
+
+    if ((RandFloat() < 0.5))
+    {
+        pMiner->DecreaseHealth();
+    }
 }
 
 void FightBar::Exit(Miner* pMiner)
 {
-    cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Thankya li'lle lady. Ah better get back to whatever ah wuz doin'";
 }
 
 
 bool FightBar::OnMessage(Miner* pMiner, const Telegram& msg)
 {
     //send msg to global message handler
+    SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+    switch (msg.Msg)
+    {
+    case Msg_WinFight:
+
+        cout << "\nMessage handled by " << GetNameOfEntity(pMiner->ID())
+            << " at time: " << Clock->GetCurrentTime();
+
+        SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+        cout << "\n" << GetNameOfEntity(pMiner->ID())
+            << ": And don't come back !";
+
+        pMiner->GetFSM()->RevertToPreviousState();
+
+        return true;
+
+    }
     return false;
 }
 

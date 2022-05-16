@@ -17,7 +17,7 @@ struct Telegram;
 //above this value a miner is drunk
 const int DrunkLevel = 10;
 
-const int MaxHealth = 5;
+const int MaxHealthDrunkard = 5;
 
 class Drunkard : public BaseGameEntity {
 private:
@@ -34,6 +34,7 @@ private:
 public:
 
     Drunkard(int id) :m_Location(shack),
+        m_iHealth(MaxHealthDrunkard),
         m_iDrunkenness(0),
         BaseGameEntity(id)
 

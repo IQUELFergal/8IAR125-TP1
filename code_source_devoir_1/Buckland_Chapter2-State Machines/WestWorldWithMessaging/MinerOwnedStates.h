@@ -128,7 +128,7 @@ private:
   QuenchThirst(const QuenchThirst&);
   QuenchThirst& operator=(const QuenchThirst&);
 
-  int timeDrink;
+  int timeDrink = 1;
  
 public:
 

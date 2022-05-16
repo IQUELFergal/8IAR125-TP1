@@ -9,7 +9,7 @@ enum message_type
   Msg_StewReady,
   Msg_EnterBar,
   Msg_ProvokeFight,
-  Msg_AcceptFight
+  Msg_WinFight
 };
 
 
