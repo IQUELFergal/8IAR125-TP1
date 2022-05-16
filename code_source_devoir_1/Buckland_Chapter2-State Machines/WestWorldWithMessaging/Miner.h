@@ -98,9 +98,9 @@ public:
   void          AddToGoldCarried(int val);
   bool          PocketsFull()const{return m_iGoldCarried >= MaxNuggets;}
 
-  bool          Healthy()const;
-  void          DecreaseHealth() { m_iFatigue -= 1; }
-  void          IncreaseHealth() { m_iFatigue += 1; }
+  bool          Healthy()const { return m_iHealth > 0; };
+  void          DecreaseHealth() { m_iHealth -= 1; }
+  void          IncreaseHealth() { m_iHealth += 1; }
 
   bool          Fatigued()const;
   void          DecreaseFatigue(){m_iFatigue -= 1;}

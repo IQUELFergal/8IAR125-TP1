@@ -63,6 +63,10 @@ public:
     location_type Location()const { return m_Location; }
     void          ChangeLocation(location_type loc) { m_Location = loc; }
 
+    bool          Healthy()const { return m_iHealth > 0; };
+    void          DecreaseHealth() { m_iHealth -= 1; }
+    void          IncreaseHealth() { m_iHealth += 1; }
+
     bool          Drunk()const { return m_iDrunkenness >= DrunkLevel; };
     void          DecreaseDrunkenness() { m_iDrunkenness -= 1; }
     void          IncreaseDrunkenness() { m_iDrunkenness += 1; }
