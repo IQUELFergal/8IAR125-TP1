@@ -17,6 +17,7 @@ using std::cout;
 extern std::ofstream os;
 #define cout os
 #endif
+#include "../../Common/misc/utils.h"
 
 //------------------------------------------------------------------------methods for GoToTheSaloonAndDrink
 GoToTheSaloonAndDrink* GoToTheSaloonAndDrink::Instance()
@@ -134,7 +135,15 @@ void Fight::Enter(Drunkard* pDrunkard)
 
 void Fight::Execute(Drunkard* pDrunkard)
 {
-    
+    if (!pDrunkard -> Healthy())
+    {
+        pDrunkard->GetFSM()->ChangeState(GoHomeAndSleep::Instance());
+    }
+
+    if ((RandFloat() < 0.5))
+    {
+        pDrunkard->DecreaseHealth();
+    }
 }
 
 
