@@ -21,7 +21,6 @@ private:
 
   //every entity must have a unique identifying number
   int          m_ID;
-
   //this is the next valid ID. Each time a BaseGameEntity is instantiated
   //this value is updated
   static int  m_iNextValidID;
@@ -31,6 +30,7 @@ private:
   //or equal to the next valid ID, before setting the ID and incrementing
   //the next valid ID
   void SetID(int val);
+
 
 public:
 

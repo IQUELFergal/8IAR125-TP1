@@ -17,6 +17,7 @@
 
 #include "misc/ConsoleUtils.h"
 #include "messaging/Telegram.h"
+#include <mutex>
 
 class BaseGameEntity;
 
@@ -37,6 +38,7 @@ private:
   //because of the benefit of automatic sorting and avoidance
   //of duplicates. Messages are sorted by their dispatch time.
   std::set<Telegram> PriorityQ;
+  std::mutex displayMutex;
 
   //this method is utilized by DispatchMessage or DispatchDelayedMessages.
   //This method calls the message handling member function of the receiving
@@ -64,6 +66,21 @@ public:
   //send out any delayed messages. This method is called each time through   
   //the main game loop.
   void DispatchDelayedMessages();
+
+  //send out any delayed messages. This method is called each time through   
+   //a thread loop loop.
+  void DispatchDelayedMessages(BaseGameEntity*);
+
+
+  // Dans un vrai projet utilisé quelque chose de plus flexible que ces fonction mgs suivantes
+  // 
+  // message, utilise comme subsitut thread safe de std::cout
+  void Msg(const int, const char* msg);
+  // comme pour message mais change la couleur du background
+  void MsgTelegram(const int, const std::string msg); 
+  // comme pour message mais change la couleur du background
+  void MsgTelegramReceived(const int id);
+
 };
 
 

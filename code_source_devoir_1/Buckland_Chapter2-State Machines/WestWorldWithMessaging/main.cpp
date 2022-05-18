@@ -1,7 +1,10 @@
 #include <fstream>
 #include <time.h>
+#include <thread>
 
 #include "Locations.h"
+#include "BaseGameEntity.h"
+
 #include "Miner.h"
 #include "MinersWife.h"
 #include "Drunkard.h"
@@ -12,6 +15,28 @@
 
 
 std::ofstream os;
+
+
+
+
+void ThreadUpdate(BaseGameEntity* entity)
+{
+    for (int i = 0; i < 30; ++i)
+    {
+        entity->Update();
+
+        //dispatch any delayed messages
+        Dispatch->DispatchDelayedMessages(entity);
+
+        Sleep(800);
+    }
+}
+
+
+
+
+
+
 
 int main()
 {
@@ -37,8 +62,21 @@ int main()
   EntityMgr->RegisterEntity(Elsa);
   EntityMgr->RegisterEntity(John);
 
+
+
+  // Version with Thread
+  std::thread minerThread(ThreadUpdate, Bob);
+  std::thread wifeThread(ThreadUpdate, Elsa);
+  std::thread drunkardThread(ThreadUpdate, John);
+
+  minerThread.join();
+  wifeThread.join();
+  drunkardThread.join();
+
+
+  // Version without thread
   //run Bob and Elsa through a few Update calls
-  for (int i=0; i<30; ++i)
+  /* for (int i = 0; i<30; ++i)
   { 
     Bob->Update();
     Elsa->Update(); 
@@ -48,7 +86,7 @@ int main()
     Dispatch->DispatchDelayedMessages();
 
     Sleep(800);
-  }
+  }*/
 
   //tidy up
   delete Bob;
@@ -61,6 +99,11 @@ int main()
 
   return 0;
 }
+
+
+
+
+
 
 
 

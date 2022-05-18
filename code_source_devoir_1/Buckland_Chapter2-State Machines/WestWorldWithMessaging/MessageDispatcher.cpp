@@ -55,6 +55,8 @@ void MessageDispatcher::DispatchMessage(double  delay,
                                         int    msg,
                                         void*  ExtraInfo)
 {
+
+    std::lock_guard<std::mutex> guard(displayMutex);
   SetTextColor(BACKGROUND_RED|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
 
   //get pointers to the sender and receiver
@@ -135,6 +137,78 @@ void MessageDispatcher::DispatchDelayedMessages()
     //remove it from the queue
     PriorityQ.erase(PriorityQ.begin());
   }
+}
+
+
+
+
+// Dispatch expired telegram for a given entity
+void MessageDispatcher::DispatchDelayedMessages(BaseGameEntity* entity)
+{
+    //SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+    //get current time
+    double CurrentTime = Clock->GetCurrentTime();
+
+    //now peek at the queue to see if any telegrams need dispatching.
+    //remove all telegrams from the front of the queue that have gone
+    //past their sell by date
+    while (!PriorityQ.empty() &&
+        (PriorityQ.begin()->DispatchTime < CurrentTime) &&
+        (PriorityQ.begin()->DispatchTime > 0))
+    {
+        //read the telegram from the front of the queue
+        const Telegram& telegram = *PriorityQ.begin();
+
+        //find the recipient
+        BaseGameEntity* pReceiver = EntityMgr->GetEntityFromID(telegram.Receiver);
+
+        // Check if the recipient is the given entity
+        if (pReceiver->ID() == entity->ID()) 
+        {
+            MsgTelegram(pReceiver->ID(), MsgToStr(telegram.Msg));
+
+            /*cout << "\nQueued telegram ready for dispatch: Sent to "
+                << GetNameOfEntity(pReceiver->ID()) << ". Msg is " << MsgToStr(telegram.Msg);*/
+
+            //send the telegram to the recipient
+            Discharge(pReceiver, telegram);
+
+            //remove it from the queue
+            PriorityQ.erase(PriorityQ.begin());
+
+        }
+        else 
+        {
+            // pour pas boucle infini je crois
+            // et du coup c'est pas ouf mais pour l'exercice ça fera l'affaire
+            return;
+        }
+    }
+}
+
+void MessageDispatcher::Msg(const int id, const char* msg)
+{
+    std::lock_guard<std::mutex> guard(displayMutex);
+
+    SetTextColor(GetColorOfEntity(id));
+    cout << "\n" << GetNameOfEntity(id) << ": " << msg;
+}
+
+void MessageDispatcher::MsgTelegram(const int id, const std::string msg)
+{
+    std::lock_guard<std::mutex> guard(displayMutex);
+
+    SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); 
+    std::cout << "\nQueued telegram ready for dispatch: Sent to " << GetNameOfEntity(id) << ". Msg is " << msg;
+}
+
+void MessageDispatcher::MsgTelegramReceived(const int id) 
+{
+    std::lock_guard<std::mutex> guard(displayMutex);
+
+    SetTextColor(BACKGROUND_RED|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
+    cout << "\nMessage received by " << GetNameOfEntity(id) << " at time: " << Clock->GetCurrentTime();
 }
 
 
