@@ -56,7 +56,6 @@ void MessageDispatcher::DispatchMessage(double  delay,
                                         void*  ExtraInfo)
 {
 
-    std::lock_guard<std::mutex> guard(displayMutex);
   SetTextColor(BACKGROUND_RED|FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
 
   //get pointers to the sender and receiver
