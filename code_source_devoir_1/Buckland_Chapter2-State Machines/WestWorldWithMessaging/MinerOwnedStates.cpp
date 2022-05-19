@@ -173,6 +173,10 @@ void GoHomeAndSleepTilRested::Execute(Miner* pMiner)
   {
     //sleep
     pMiner->DecreaseFatigue();
+    if (!pMiner->Recovered())
+    {
+        pMiner->IncreaseHealth();
+    }
     Dispatch->Msg(pMiner->ID(), "ZZZZ... ");
   } 
 }
@@ -385,7 +389,7 @@ bool FightBar::OnMessage(Miner* pMiner, const Telegram& msg)
 
         // Drunkard has lost
         Dispatch->MsgTelegramReceived(pMiner->ID());
-        Dispatch->Msg(pMiner->ID(), "And don't comme back");
+        Dispatch->Msg(pMiner->ID(), "And don't come back");
 
         pMiner->GetFSM()->RevertToPreviousState();
 

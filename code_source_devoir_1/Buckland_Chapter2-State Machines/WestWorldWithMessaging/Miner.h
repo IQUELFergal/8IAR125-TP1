@@ -99,6 +99,7 @@ public:
   bool          PocketsFull()const{return m_iGoldCarried >= MaxNuggets;}
 
   bool          Healthy()const { return m_iHealth > 0; };
+  bool          Recovered()const { return m_iHealth == MaxHealth; }
   void          DecreaseHealth() { m_iHealth -= 1; }
   void          IncreaseHealth() { m_iHealth += 1; }
 

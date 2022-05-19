@@ -25,6 +25,18 @@ inline std::string MsgToStr(int msg)
     
     return "StewReady";
 
+  case 2:
+
+      return "EnterBar";
+
+  case 3:
+
+      return "ProvokeFight";
+
+  case 4:
+
+      return "WinFight";
+
   default:
 
     return "Not recognized!";

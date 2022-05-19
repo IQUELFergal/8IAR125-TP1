@@ -65,6 +65,7 @@ public:
     void          ChangeLocation(location_type loc) { m_Location = loc; }
 
     bool          Healthy()const { return m_iHealth > 0; };
+    bool          Recovered()const { return m_iHealth == MaxHealthDrunkard; }
     void          DecreaseHealth() { m_iHealth -= 1; }
     void          IncreaseHealth() { m_iHealth += 1; }
 

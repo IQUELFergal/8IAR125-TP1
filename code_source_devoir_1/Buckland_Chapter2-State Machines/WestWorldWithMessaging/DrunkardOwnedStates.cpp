@@ -110,7 +110,11 @@ void GoHomeAndSleep::Execute(Drunkard* pDrunkard)
 {
     // The drunkard sleep and lose drunkeness
     pDrunkard->DecreaseDrunkenness();
-    pDrunkard->DecreaseDrunkenness();
+
+    if (!pDrunkard->Recovered())
+    {
+        pDrunkard->IncreaseHealth();
+    }
 
     Dispatch->Msg(pDrunkard->ID(), "Sleepin");
 
